@@ -1,0 +1,45 @@
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+
+using namespace std;
+
+int solution(int a, int b, int c, int d) {
+    vector<int> dice = {a, b, c, d};
+    unordered_map<int, int> freq;
+
+    for (int num : dice) {
+        freq[num]++;
+    }
+
+    int answer = 0;
+
+    if (freq.size() == 1) {  
+        answer = 1111 * a;
+    } else if (freq.size() == 2) {
+        auto it = freq.begin();
+        int p = it->first, p_count = it->second;
+        int q = (++it)->first, q_count = it->second;
+
+        if (p_count == 3) {  
+            answer = (10 * p + q) * (10 * p + q);
+        } else if (q_count == 3) {  
+            answer = (10 * q + p) * (10 * q + p);
+        } else {  
+            answer = (p + q) * abs(p - q);
+        }
+    } else if (freq.size() == 3) {
+        int pair_value = 0, q = 0, r = 0;
+        for (auto& pair : freq) {
+            if (pair.second == 2) pair_value = pair.first;
+            else if (q == 0) q = pair.first;
+            else r = pair.first;
+        }
+        answer = q * r;
+    } else {
+        answer = *min_element(dice.begin(), dice.end());
+    }
+
+    return answer;
+}
+
